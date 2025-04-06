@@ -1,0 +1,59 @@
+[project]
+name = "steampipe-mcp-server"
+version = "0.1.0"
+description = "A Python MCP server interacting with PostgreSQL, intended for use with Steampipe."
+readme = "README.md"
+requires-python = ">=3.10" # Matching the MCP SDK requirement
+license = { text = "MIT" }
+authors = [{ name = "Andrew Kurin", email = "me@andrewkurin.com" }]
+maintainers = [{ name = "Andrew Kurin", email = "me@andrewkurin.com" }]
+keywords = ["mcp", "llm", "postgres", "postgresql", "steampipe"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+]
+
+# --- Runtime Dependencies ---
+dependencies = [
+    # Core MCP SDK with CLI tools
+    "mcp[cli]>=1.6.0",
+    # Async PostgreSQL driver with binary extensions and pooling
+    "psycopg[binary,pool]>=3.1.0",
+    "pydantic>=2.0.0",
+    "click>=8.1.8",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+# Explicitly tell Hatchling to include the script file in the built wheel.
+include = ["steampipe_server.py"]
+
+[tool.ruff]
+line-length = 88
+target-version = "py310"
+
+[tool.ruff.lint]
+select = [
+    "E",  # pycodestyle errors
+    "F",  # pyflakes
+    "W",  # pycodestyle warnings
+    "I",  # isort
+    "UP", # pyupgrade
+]
+ignore = []
+
+[tool.pyright]
+include = ["."]
+venvPath = "."
+venv = ".venv"  # Standard uv virtual environment directory name
+
+[tool.uv]
+dev-dependencies = ["ruff>=0.8.5", "pyright>=1.1.391"]
