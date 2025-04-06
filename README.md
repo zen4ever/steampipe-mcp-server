@@ -1,4 +1,6 @@
-An MCP server interacting with PostgresSQL database, primarily for use with Steampipe service.
+# Steampipe MCP Server
+
+An MCP server interacting with PostgreSQL databases, primarily for use with Steampipe service.
 
 ## Prerequisites
 
@@ -79,14 +81,47 @@ Lists all tables within a specific schema. Useful to limit the amount of tables,
 ### `get_table_schema`
 Retrieves column names and data types for a specific table, table should be in a format like `schema.table`.
 
+## Project Structure
+
+```
+steampipe-mcp-server/
+├── src/
+│   └── steampipe_mcp_server/  # Main package
+│       ├── __init__.py
+│       ├── cli.py             # Command-line interface
+│       ├── database.py        # Database service
+│       ├── server.py          # MCP server setup
+│       ├── tools.py           # MCP tools implementation
+│       └── test_utils.py      # Testing utilities
+├── tests/                     # Test directory
+├── Makefile                   # Build automation
+├── pyproject.toml             # Project configuration
+└── README.md                  # This file
+```
+
 ## Installation
 
-### Development Setup
+### Development Setup (Recommended)
+
+The easiest way to get started is to use the included Makefile:
+
+```bash
+# Create a virtual environment first
+uv venv
+
+# Install development dependencies
+make dev-install
+
+# View all available commands
+make help
+```
+
+Alternatively, you can:
 
 1. Clone the repository
 2. Create a virtual environment: `uv venv`
-3. Activate the environment (e.g., `source .venv/bin/activate` on Linux/macOS or `.venv\Scripts\activate` on Windows)
-4. Install the development dependencies: `uv sync --dev`
+3. Activate the environment: `source .venv/bin/activate` (Linux/macOS) or `.venv\Scripts\activate` (Windows)
+4. Install dev dependencies: `uv pip install -e .[dev]`
 
 ### Install from Source
 
@@ -94,41 +129,97 @@ Retrieves column names and data types for a specific table, table should be in a
 pip install -e .
 ```
 
-## How to Run
+## Development
 
-### 1. Development (Recommended)
+### Using the Makefile
+
+The project includes a Makefile with common tasks:
 
 ```bash
+# Run the server in development mode with Inspector
+make dev
+
+# Run tests
+make test
+
+# Run linting
+make lint
+
+# Run type checking
+make typecheck
+
+# Format code
+make format
+
+# Run all checks (lint and typecheck)
+make check
+
+# Install in Claude Desktop
+make install-mcp
+```
+
+Run `make help` to see all available commands.
+
+## How to Run
+
+### 1. Development Mode (Recommended)
+
+```bash
+# Using make
+make dev
+
+# OR manually
 mcp dev src/steampipe_mcp_server/cli.py
 ```
 
-This will start the server and the MCP Inspector, allowing you to test the `query` tool and read the resources interactively.
+This will start the server and the MCP Inspector, allowing you to test the `query` tool and other tools interactively.
 
 ### 2. Using CLI
 
 After installation:
 
 ```bash
+# Using make
+make server
+
+# OR with explicit URL
 steampipe-mcp --database-url postgresql://steampipe:password@localhost:9193/steampipe
-# or with environment variable set:
+
+# OR with environment variable
+export DATABASE_URL=postgresql://steampipe:password@localhost:9193/steampipe
 steampipe-mcp
 ```
 
 ### 3. Install in Claude Desktop
 
 ```bash
-# Make sure your .env file is present or DATABASE_URL is set
+# Using make (ensure DATABASE_URL environment variable is set)
+make install-mcp
+
+# OR manually
 mcp install steampipe_mcp_server.cli:main
 ```
 
-This will configure Claude Desktop to run your server, making the `query` tools available within Claude.
+This will configure Claude Desktop to run your server, making the tools available within Claude.
 
 ## Testing
 
 Run tests with:
 
 ```bash
+# Using make
+make test
+
+# OR manually
 pytest
 ```
 
 For tests that require a database connection, set the `TEST_DB_URL` environment variable.
+
+## Contributing
+
+1. Fork the repository
+2. Create a new branch for your feature
+3. Make your changes
+4. Run tests and checks: `make check test`
+5. Submit a pull request

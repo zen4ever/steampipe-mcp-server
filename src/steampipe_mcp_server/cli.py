@@ -18,14 +18,14 @@ def get_safe_display_url(url: str) -> str:
     """Returns a safe URL for display, with credentials masked."""
     if not url or "://" not in url:
         return "[URL details hidden]"
-        
+
     try:
         parsed_url = urlparse(url)
         # Create a netloc string with password hidden
         safe_netloc = parsed_url.hostname or ""
         if parsed_url.port:
             safe_netloc += f":{parsed_url.port}"
-            
+
         if parsed_url.username:
             if parsed_url.password:
                 safe_netloc = f"{parsed_url.username}:*****@{safe_netloc}"
@@ -48,10 +48,10 @@ def get_safe_display_url(url: str) -> str:
 
 @click.command()
 @click.option(
-    '--database-url',
-    envvar='DATABASE_URL',
+    "--database-url",
+    envvar="DATABASE_URL",
     required=True,
-    help='PostgreSQL database connection URL (e.g., postgresql://user:pass@host:port/db).'
+    help="PostgreSQL database connection URL (e.g., postgresql://user:pass@host:port/db).",
 )
 def main(database_url: str) -> None:
     """Starts the Steampipe MCP server."""

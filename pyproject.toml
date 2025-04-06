@@ -28,6 +28,16 @@ dependencies = [
     "click>=8.1.8",
 ]
 
+# --- Optional Dependencies ---
+[project.optional-dependencies]
+dev = [
+    "ruff>=0.8.5",
+    "pyright>=1.1.391",
+    "pytest>=7.0.0",
+    "pytest-asyncio>=0.21.0",
+    "build>=1.0.0",
+]
+
 [project.scripts]
 steampipe-mcp = "steampipe_mcp_server.cli:main"
 
@@ -59,6 +69,11 @@ select = [
 ]
 ignore = []
 
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+line-ending = "auto"
+
 [tool.pyright]
 include = ["src", "tests"]
 venvPath = "."
@@ -69,5 +84,6 @@ dev-dependencies = [
     "ruff>=0.8.5", 
     "pyright>=1.1.391",
     "pytest>=7.0.0",
-    "pytest-asyncio>=0.21.0"
+    "pytest-asyncio>=0.21.0",
+    "build>=1.0.0",
 ]
