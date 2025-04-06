@@ -1,6 +1,8 @@
 # Steampipe MCP Server
 
-An MCP server interacting with PostgreSQL databases, primarily for use with Steampipe service.
+An MCP server interacting with PostgreSQL databases, primarily for use with [Steampipe](https://steampipe.io/).
+
+Steampipe has a schema per connection, and creates a search_path that includes all the schemas, but public schema is typically empty. In additiona to that, Steampipe plugins for AWS, GCP and other clouds have a lot of tables, so just listing all of them is not practical. So, the recommended way to prompt your Claude Desktop would be to say something like this: "In steampipe using aws_all schema, give me a list of all ec2 instances". This way Claude will be more likely to use list_tables_in_schema in schema command, to limit the number of tables retrieved.
 
 ## Prerequisites
 
