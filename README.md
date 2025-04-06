@@ -47,7 +47,7 @@ postgres://steampipe:password@localhost:9193/steampipe
 
 You can provide this URL in the `--database-url` argument when running the server:
 ```
-python steampipe_server.py --database-url postgresql://steampipe:password@localhost:9193/steampipe
+steampipe-mcp --database-url postgresql://steampipe:password@localhost:9193/steampipe
 ```
 
 Note: Protocol must be `postgresql://` for the server to work correctly.
@@ -81,29 +81,54 @@ Retrieves column names and data types for a specific table, table should be in a
 
 ## Installation
 
-1. Create a virtual environment: `uv venv`
-2.  Activate the environment (e.g., `source .venv/bin/activate` on Linux/macOS or `.venv\Scripts\activate` on Windows).
-3.  Install the dependencies: `uv sync` (or `uv sync --dev` to include development tools).
+### Development Setup
 
-**How to Run:**
+1. Clone the repository
+2. Create a virtual environment: `uv venv`
+3. Activate the environment (e.g., `source .venv/bin/activate` on Linux/macOS or `.venv\Scripts\activate` on Windows)
+4. Install the development dependencies: `uv sync --dev`
 
-1.  **Development (Recommended):**
-    ```bash
-    mcp dev steampipe_server.py
-    ```
-    This will start the server and the MCP Inspector, allowing you to test the `query` tool and read the resources interactively.
+### Install from Source
 
-2.  **Directly (for stdio):**
-    ```bash
-    python steampipe_server.py --database-url postgresql://steampipe:password@localhost:9193/steampipe
-    # or
-    uv run python steampipe_server.py --database-url postgresql://steampipe:password@localhost:9193/steampipe
-    ```
-    This runs the server using standard input/output, suitable for integration with tools like Claude Desktop (after using `mcp install`).
+```bash
+pip install -e .
+```
 
-3.  **Install in Claude Desktop:**
-    ```bash
-    # Make sure your .env file is present or DATABASE_URL is set
-    mcp install steampipe_server.py
-    ```
-    This will configure Claude Desktop to run your server, making the `query` tools available within Claude.
+## How to Run
+
+### 1. Development (Recommended)
+
+```bash
+mcp dev src/steampipe_mcp_server/cli.py
+```
+
+This will start the server and the MCP Inspector, allowing you to test the `query` tool and read the resources interactively.
+
+### 2. Using CLI
+
+After installation:
+
+```bash
+steampipe-mcp --database-url postgresql://steampipe:password@localhost:9193/steampipe
+# or with environment variable set:
+steampipe-mcp
+```
+
+### 3. Install in Claude Desktop
+
+```bash
+# Make sure your .env file is present or DATABASE_URL is set
+mcp install steampipe_mcp_server.cli:main
+```
+
+This will configure Claude Desktop to run your server, making the `query` tools available within Claude.
+
+## Testing
+
+Run tests with:
+
+```bash
+pytest
+```
+
+For tests that require a database connection, set the `TEST_DB_URL` environment variable.

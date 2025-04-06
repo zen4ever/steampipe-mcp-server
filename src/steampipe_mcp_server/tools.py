@@ -1,63 +1,19 @@
+"""MCP tools for interacting with PostgreSQL databases."""
+
 import json
-from collections.abc import AsyncIterator
-from contextlib import asynccontextmanager
-from typing import Any
-from urllib.parse import urlparse, urlunparse
 
-import click
-
-# Use psycopg for async postgres access
 import psycopg
-from mcp.server.fastmcp import Context, FastMCP
+from mcp.server.fastmcp import Context
 from mcp.server.fastmcp.utilities.logging import get_logger
-
-# Import SQL for type hinting with execute
 from psycopg import sql as psycopg_sql
 from psycopg_pool import AsyncConnectionPool
-from pydantic import BaseModel, Field
+from pydantic import Field
+
+from .server import mcp
 
 logger = get_logger(__name__)
 
-class Settings(BaseModel):
-    """Settings for the PostgreSQL MCP server."""
-    # Make database_url optional initially, it will be set by main()
-    database_url: str | None = Field(None,
-        description="PostgreSQL database connection URL (e.g., postgresql://user:pass@host:port/db)."
-    )
 
-# Create an instance; database_url will be populated later by main()
-settings = Settings(database_url=None)
-
-# --- Database Connection Pool Management (Lifespan) ---
-@asynccontextmanager
-async def lifespan(server: FastMCP) -> AsyncIterator[dict[str, Any]]:
-    """Manage the async database connection pool."""
-    logger.info("Starting up and creating database pool...")
-    if settings.database_url is None:
-        raise ValueError("Database URL not configured before lifespan startup.")
-    # min_size=1 helps keep at least one connection ready
-    pool = AsyncConnectionPool(settings.database_url, min_size=1, open=False)
-    try:
-        await pool.open(wait=True) # Wait for pool to be ready
-        logger.info("Database pool opened.")
-        yield {"pool": pool} # Make pool available via context
-    finally:
-        logger.info("Shutting down and closing database pool...")
-        await pool.close()
-        logger.info("Database pool closed.")
-
-
-# --- FastMCP Server Setup ---
-mcp = FastMCP(
-    "steampipe-mcp",
-    dependencies=["psycopg[binary,pool]", "click", "pydantic"],
-    lifespan=lifespan,  # Register the lifespan manager
-)
-
-# Resource to list available public tables
-# @mcp.resource("postgres://db/tables")
-# temporary fix to avoid bug with resource validation in mcp
-# pending PR https://github.com/modelcontextprotocol/python-sdk/pull/248/files
 @mcp.tool()
 async def list_all_tables(ctx: Context) -> list[str]:
     """
@@ -95,6 +51,7 @@ async def list_all_tables(ctx: Context) -> list[str]:
         logger.error(f"Error listing tables: {e}")
         raise ValueError(f"Failed to list tables: {e}") from e
 
+
 @mcp.tool(name="list_tables_in_schema")
 async def list_tables_in_schema(
     ctx: Context,
@@ -125,13 +82,13 @@ async def list_tables_in_schema(
                     (schema_name,),
                 )
                 tables = [row[0] for row in await cur.fetchall()]
-                logger.info(f"Found {len(tables)} public tables.")
+                logger.info(f"Found {len(tables)} tables in schema {schema_name}.")
                 return tables
     except Exception as e:
         logger.error(f"Error listing tables: {e}")
         raise ValueError(f"Failed to list tables: {e}") from e
 
-# tool to get the schema for a specific table
+
 @mcp.tool(name="get_table_schema")
 async def get_table_schema(
     ctx: Context,
@@ -147,7 +104,7 @@ async def get_table_schema(
     pool: AsyncConnectionPool = ctx.request_context.lifespan_context["pool"]
     logger.info(f"Fetching schema for table: {table_name}")
     try:
-        parts = table_name.split('.', 1) # Split only once
+        parts = table_name.split('.', 1)  # Split only once
         if len(parts) != 2:
             raise ValueError(
                 f"Invalid table name format: '{table_name}'."
@@ -209,24 +166,20 @@ async def query(
     Only SELECT statements are effectively processed due to read-only transaction.
     """
     pool: AsyncConnectionPool = ctx.request_context.lifespan_context["pool"]
-    logger.info(f"Executing read-only query: {sql[:100]}...") # Log truncated query
+    logger.info(f"Executing read-only query: {sql[:100]}...")  # Log truncated query
 
     try:
         async with pool.connection() as conn:
             # Ensure read-only transaction
-            # NOTE: If type checkers still complain about readonly/isolation,
-            # ensure psycopg stubs are updated or add '# type: ignore[call-arg]'
             async with conn.transaction():
                 async with conn.cursor() as cur:
-                    # FIX 2: Wrap the raw SQL string with psycopg.sql.SQL
-                    #        to satisfy the type checker for cur.execute()
                     await cur.execute(psycopg_sql.SQL(
                         "SET TRANSACTION ISOLATION LEVEL READ COMMITTED"
                     ))
                     await cur.execute(psycopg_sql.SQL(
                         "SET TRANSACTION READ ONLY"
                     ))
-                    await cur.execute(sql) # type: ignore[call-arg]
+                    await cur.execute(sql)  # type: ignore[call-arg]
                     # Get column names for better JSON output
                     colnames = [
                         desc.name for desc in cur.description
@@ -252,51 +205,3 @@ async def query(
     except Exception as e:
         logger.error(f"Unexpected error during query: {e}")
         raise ValueError(f"Query execution failed: {e}") from e
-
-@click.command()
-@click.option(
-    '--database-url',
-    envvar='DATABASE_URL',
-    required=True,
-    help='PostgreSQL database connection URL (e.g., postgresql://user:pass@host:port/db).'
-)
-def main(database_url: str):
-    """Starts the Steampipe MCP server."""
-
-    settings.database_url = database_url
-    try:
-        parsed_url = urlparse(settings.database_url)
-        # Create a netloc string with password hidden
-        safe_netloc = parsed_url.hostname or ""
-        if parsed_url.username:
-            safe_netloc = f"{parsed_url.username}@{safe_netloc}"
-            if parsed_url.password:
-                safe_netloc = f"{parsed_url.username}:*****@{safe_netloc}"
-        if parsed_url.port:
-            safe_netloc += f":{parsed_url.port}"
-
-        # Reconstruct the URL without the password for logging
-        safe_url_parts = (
-            parsed_url.scheme,
-            safe_netloc,
-            parsed_url.path,
-            parsed_url.params,
-            parsed_url.query,
-            parsed_url.fragment,
-        )
-        safe_display_url = urlunparse(safe_url_parts)
-        logger.info(f"Starting Steampipe MCP server for {safe_display_url}...")
-    except Exception: # Fallback in case parsing fails for some reason
-        logger.error("Could not parse database URL for safe display.")
-        logger.info("Starting Steampipe MCP server (URL details hidden)...")
-
-    logger.info("Running on stdio...")
-
-    # mcp.run() will now execute, and the lifespan manager (if modified)
-    # can access the database_url set above.
-    mcp.run() # Defaults to stdio transport
-
-if __name__ == "__main__":
-    # Remove previous environment/dotenv checks and Pydantic Settings loading logic.
-    # Click handles the --database-url option and the DATABASE_URL env var directly.
-    main()
