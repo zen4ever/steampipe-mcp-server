@@ -192,6 +192,10 @@ steampipe-mcp
 
 ### 3. Install in Claude Desktop
 
+#### Development Version
+
+For development and testing:
+
 ```bash
 # Using make (ensure DATABASE_URL environment variable is set)
 make install-mcp
@@ -200,7 +204,34 @@ make install-mcp
 mcp install steampipe_mcp_server.cli:main
 ```
 
-This will configure Claude Desktop to run your server, making the tools available within Claude.
+#### Published Version
+
+For the published version, you can configure Claude Desktop directly:
+
+1. Open Claude Desktop
+2. Navigate to Settings > Developer > Edit Config
+3. Add the following configuration to the JSON file:
+
+```json
+{
+  "mcpServers": {
+    "steampipe": {
+      "command": "uvx",
+      "args": [
+        "steampipe-mcp-server",
+        "--database-url",
+        "postgresql://steampipe:password@localhost:9193/steampipe"
+      ]
+    }
+  }
+}
+```
+
+4. Save the config file and restart Claude Desktop
+
+Replace the database URL with your actual Steampipe database URL. This configuration uses `uvx` to execute the published package directly.
+
+The tools will be available within Claude under the `steampipe` namespace.
 
 ## Testing
 
