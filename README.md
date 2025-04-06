@@ -52,8 +52,34 @@ python steampipe_server.py --database-url postgresql://steampipe:password@localh
 
 Note: Protocol must be `postgresql://` for the server to work correctly.
 
-## Installation
+### 4. Configuring Environment Variables
 
+You can configure the database connection using an environment variable instead of passing it each time:
+
+1. Create a `.env` file in the project directory with your database URL:
+   ```
+   DATABASE_URL=postgresql://steampipe:password@localhost:9193/steampipe
+   ```
+
+2. The server will automatically load this configuration when starting up.
+
+## Available Tools
+
+This MCP server provides several useful tools for interacting with your PostgreSQL database:
+
+### `query`
+Runs a read-only SQL query against the database and returns results as JSON.
+
+### `list_all_tables`
+Lists all available tables in all schemas in your database's search path. Steampipe doesn't use `public` schema, there is schema per connection.
+
+### `list_tables_in_schema`
+Lists all tables within a specific schema. Useful to limit the amount of tables, especially when working with just one schema.
+
+### `get_table_schema`
+Retrieves column names and data types for a specific table, table should be in a format like `schema.table`.
+
+## Installation
 
 1. Create a virtual environment: `uv venv`
 2.  Activate the environment (e.g., `source .venv/bin/activate` on Linux/macOS or `.venv\Scripts\activate` on Windows).
