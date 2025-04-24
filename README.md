@@ -51,7 +51,7 @@ postgres://steampipe:password@localhost:9193/steampipe
 
 You can provide this URL in the `--database-url` argument when running the server:
 ```
-steampipe-mcp --database-url postgresql://steampipe:password@localhost:9193/steampipe
+steampipe-mcp-server --database-url postgresql://steampipe:password@localhost:9193/steampipe
 ```
 
 Note: Protocol must be `postgresql://` for the server to work correctly.
@@ -62,7 +62,7 @@ You can configure the database connection using an environment variable instead 
 
 1. Create a `.env` file in the project directory with your database URL:
    ```
-   DATABASE_URL=postgresql://steampipe:password@localhost:9193/steampipe
+   STEAMPIPE_MCP_DATABASE_URL=postgresql://steampipe:password@localhost:9193/steampipe
    ```
 
 2. The server will automatically load this configuration when starting up.
@@ -185,11 +185,11 @@ After installation:
 make server
 
 # OR with explicit URL
-steampipe-mcp --database-url postgresql://steampipe:password@localhost:9193/steampipe
+steampipe-mcp-server --database-url postgresql://steampipe:password@localhost:9193/steampipe
 
 # OR with environment variable
-export DATABASE_URL=postgresql://steampipe:password@localhost:9193/steampipe
-steampipe-mcp
+export STEAMPIPE_MCP_DATABASE_URL=postgresql://steampipe:password@localhost:9193/steampipe
+steampipe-mcp-server
 ```
 
 ### 3. Install in Claude Desktop
@@ -199,7 +199,7 @@ steampipe-mcp
 For development and testing:
 
 ```bash
-# Using make (ensure DATABASE_URL environment variable is set)
+# Using make (ensure STEAMPIPE_MCP_DATABASE_URL environment variable is set)
 make install-mcp
 
 # OR manually

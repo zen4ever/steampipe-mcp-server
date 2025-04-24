@@ -71,17 +71,17 @@ dev:
 
 server:
 	@echo "${BLUE}Running server with stdio transport...${NC}"
-	@echo "${YELLOW}Note: Make sure DATABASE_URL environment variable is set${NC}"
-	@if [ -z "$$DATABASE_URL" ]; then \
-		echo "${YELLOW}Warning: DATABASE_URL is not set!${NC}"; \
+	@echo "${YELLOW}Note: Make sure STEAMPIPE_MCP_DATABASE_URL environment variable is set${NC}"
+	@if [ -z "$$STEAMPIPE_MCP_DATABASE_URL" ]; then \
+		echo "${YELLOW}Warning: STEAMPIPE_MCP_DATABASE_URL is not set!${NC}"; \
 	fi
 	python -m steampipe_mcp_server.cli
 
 install-mcp:
 	@echo "${BLUE}Installing MCP server in Claude Desktop...${NC}"
-	@echo "${YELLOW}Note: Make sure DATABASE_URL environment variable is set${NC}"
-	@if [ -z "$$DATABASE_URL" ]; then \
-		echo "${YELLOW}Warning: DATABASE_URL is not set!${NC}"; \
+	@echo "${YELLOW}Note: Make sure STEAMPIPE_MCP_DATABASE_URL environment variable is set${NC}"
+	@if [ -z "$$STEAMPIPE_MCP_DATABASE_URL" ]; then \
+		echo "${YELLOW}Warning: STEAMPIPE_MCP_DATABASE_URL is not set!${NC}"; \
 	fi
 	mcp install steampipe_mcp_server.cli:main
 

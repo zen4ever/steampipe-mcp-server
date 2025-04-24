@@ -39,14 +39,22 @@ dev = [
 ]
 
 [project.scripts]
-steampipe-mcp = "steampipe_mcp_server.cli:main"
+steampipe-mcp-server = "steampipe_mcp_server.cli:main"
 
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"
 
-[tool.hatch.build]
-packages = ["src/steampipe_mcp_server"]
+[tool.hatch.build.targets.wheel]
+packages = ["src"]
+
+[tool.hatch.build.targets.sdist]
+include = [
+    "src/",
+    "README.md",
+    "LICENSE",
+    "pyproject.toml"
+]
 
 [tool.pytest.ini_options]
 asyncio_mode = "auto"

@@ -5,7 +5,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## Build & Runtime Commands
 - Install dependencies: `make dev-install` or `uv pip install -e .[dev]`
 - Run server in dev mode: `make dev` or `mcp dev src/steampipe_mcp_server/cli.py`
-- Run CLI: `make server` or `steampipe-mcp --database-url <URL>`
+- Run CLI: `make server` or `steampipe-mcp-server --database-url <URL>` (or set STEAMPIPE_MCP_DATABASE_URL environment variable)
 - Install in Claude Desktop: `make install-mcp` 
 - Test: `make test` or `pytest tests`
 - Lint: `make lint` or `uv run ruff check src/`

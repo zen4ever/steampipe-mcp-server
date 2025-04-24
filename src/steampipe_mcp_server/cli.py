@@ -49,7 +49,7 @@ def get_safe_display_url(url: str) -> str:
 @click.command()
 @click.option(
     "--database-url",
-    envvar="DATABASE_URL",
+    envvar="STEAMPIPE_MCP_DATABASE_URL",
     required=True,
     help="PostgreSQL database connection URL (e.g., postgresql://user:pass@host:port/db).",
 )
