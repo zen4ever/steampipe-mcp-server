@@ -9,33 +9,33 @@ authors = [{ name = "Andrew Kurin", email = "me@andrewkurin.com" }]
 maintainers = [{ name = "Andrew Kurin", email = "me@andrewkurin.com" }]
 keywords = ["mcp", "llm", "postgres", "postgresql", "steampipe"]
 classifiers = [
-    "Development Status :: 4 - Beta",
-    "Intended Audience :: Developers",
-    "License :: OSI Approved :: MIT License",
-    "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.10",
-    "Programming Language :: Python :: 3.11",
-    "Programming Language :: Python :: 3.12",
+  "Development Status :: 4 - Beta",
+  "Intended Audience :: Developers",
+  "License :: OSI Approved :: MIT License",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
 ]
 
 # --- Runtime Dependencies ---
 dependencies = [
-    # Core MCP SDK with CLI tools
-    "mcp[cli]>=1.6.0",
-    # Async PostgreSQL driver with binary extensions and pooling
-    "psycopg[binary,pool]>=3.1.0",
-    "pydantic>=2.0.0",
-    "click>=8.1.8",
+  # Core MCP SDK with CLI tools
+  "mcp[cli]>=1.6.0",
+  # Async PostgreSQL driver with binary extensions and pooling
+  "psycopg[binary,pool]>=3.1.0",
+  "pydantic>=2.0.0",
+  "click>=8.1.8",
 ]
 
 # --- Optional Dependencies ---
 [project.optional-dependencies]
 dev = [
-    "ruff>=0.8.5",
-    "pyright>=1.1.391",
-    "pytest>=7.0.0",
-    "pytest-asyncio>=0.21.0",
-    "build>=1.0.0",
+  "ruff>=0.8.5",
+  "pyright>=1.1.391",
+  "pytest>=7.0.0",
+  "pytest-asyncio>=0.21.0",
+  "build>=1.0.0",
 ]
 
 [project.scripts]
@@ -49,12 +49,7 @@ build-backend = "hatchling.build"
 packages = ["src"]
 
 [tool.hatch.build.targets.sdist]
-include = [
-    "src/",
-    "README.md",
-    "LICENSE",
-    "pyproject.toml"
-]
+include = ["src/", "README.md", "LICENSE", "pyproject.toml"]
 
 [tool.pytest.ini_options]
 asyncio_mode = "auto"
@@ -69,11 +64,11 @@ src = ["src"]
 
 [tool.ruff.lint]
 select = [
-    "E",  # pycodestyle errors
-    "F",  # pyflakes
-    "W",  # pycodestyle warnings
-    "I",  # isort
-    "UP", # pyupgrade
+  "E",  # pycodestyle errors
+  "F",  # pyflakes
+  "W",  # pycodestyle warnings
+  "I",  # isort
+  "UP", # pyupgrade
 ]
 ignore = []
 
@@ -85,13 +80,13 @@ line-ending = "auto"
 [tool.pyright]
 include = ["src", "tests"]
 venvPath = "."
-venv = ".venv"  # Standard uv virtual environment directory name
+venv = ".venv"             # Standard uv virtual environment directory name
 
 [tool.uv]
 dev-dependencies = [
-    "ruff>=0.8.5", 
-    "pyright>=1.1.391",
-    "pytest>=7.0.0",
-    "pytest-asyncio>=0.21.0",
-    "build>=1.0.0",
+  "ruff>=0.8.5",
+  "pyright>=1.1.391",
+  "pytest>=7.0.0",
+  "pytest-asyncio>=0.21.0",
+  "build>=1.0.0",
 ]

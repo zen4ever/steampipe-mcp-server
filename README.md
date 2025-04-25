@@ -268,3 +268,21 @@ For tests that require a database connection, set the `TEST_DB_URL` environment 
 3. Make your changes
 4. Run tests and checks: `make check test`
 5. Submit a pull request
+
+## Releasing
+
+To release a new version of the package:
+
+1. Update the version in `pyproject.toml`
+2. Run all checks to ensure everything is working:
+
+   ```bash
+   make check test
+   ```
+
+3. Tag the release on GitHub:
+
+   ```bash
+   git tag v0.1.0  # Use appropriate version number
+   git push origin v0.1.0
+   ```
