@@ -1,6 +1,6 @@
 [project]
 name = "steampipe-mcp-server"
-version = "0.1.0"
+version = "0.2.0"
 description = "A Python MCP server interacting with PostgreSQL, intended for use with Steampipe."
 readme = "README.md"
 requires-python = ">=3.10" # Matching the MCP SDK requirement
