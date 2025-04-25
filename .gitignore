@@ -5,6 +5,7 @@ __pycache__
 /.venv
 .env
 .ruff_cache
+.envrc
 
 # Distribution / packaging
 .Python

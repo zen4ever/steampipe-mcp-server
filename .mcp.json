@@ -1,0 +1,13 @@
+{
+  "mcpServers": {
+    "steampipe-mcp": {
+      "type": "stdio",
+      "command": "uv",
+      "args": [
+        "run",
+        "steampipe-mcp-server"
+      ],
+      "env": {}
+    }
+  }
+}
