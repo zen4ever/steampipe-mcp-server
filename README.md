@@ -9,17 +9,20 @@ Steampipe has a schema per connection, and creates a search_path that includes a
 ### 1. Install Steampipe
 
 **macOS:**
+
 ```bash
 brew tap turbot/tap
 brew install steampipe
 ```
 
 **Linux:**
+
 ```bash
 sudo /bin/sh -c "$(curl -fsSL https://steampipe.io/install/steampipe.sh)"
 ```
 
 **Windows:**
+
 ```bash
 iwr -useb https://steampipe.io/install/steampipe.ps1 | iex
 ```
@@ -27,11 +30,13 @@ iwr -useb https://steampipe.io/install/steampipe.ps1 | iex
 ### 2. Start Steampipe Service
 
 Start Steampipe as a background service:
+
 ```bash
 steampipe service start
 ```
 
 You can verify the service is running with:
+
 ```bash
 steampipe service status
 ```
@@ -45,11 +50,13 @@ steampipe service status
 ```
 
 Look for the `Database URL` in the output, which typically looks like:
+
 ```
 postgres://steampipe:password@localhost:9193/steampipe
 ```
 
 You can provide this URL in the `--database-url` argument when running the server:
+
 ```
 steampipe-mcp-server --database-url postgresql://steampipe:password@localhost:9193/steampipe
 ```
@@ -61,26 +68,60 @@ Note: Protocol must be `postgresql://` for the server to work correctly.
 You can configure the database connection using an environment variable instead of passing it each time:
 
 1. Create a `.env` file in the project directory with your database URL:
+
    ```
    STEAMPIPE_MCP_DATABASE_URL=postgresql://steampipe:password@localhost:9193/steampipe
    ```
 
 2. The server will automatically load this configuration when starting up.
 
+### 5. Install in Claude Desktop
+
+For the published version, you can configure Claude Desktop directly:
+
+1. Open Claude Desktop
+2. Navigate to Settings > Developer > Edit Config
+3. Add the following configuration to the JSON file:
+
+```json
+{
+  "mcpServers": {
+    "steampipe": {
+      "command": "uvx",
+      "args": [
+        "steampipe-mcp-server",
+        "--database-url",
+        "postgresql://steampipe:password@localhost:9193/steampipe"
+      ]
+    }
+  }
+}
+```
+
+4. Save the config file and restart Claude Desktop
+
+Replace the database URL with your actual Steampipe database URL. This configuration uses `uvx` to execute the published package directly.
+
+The tools will be available within Claude under the `steampipe` namespace.
+
 ## Available Tools
 
 This MCP server provides several useful tools for interacting with your PostgreSQL database:
 
 ### `query`
+
 Runs a read-only SQL query against the database and returns results as JSON.
 
 ### `list_all_tables`
+
 Lists all available tables in all schemas in your database's search path. Steampipe doesn't use `public` schema, there is schema per connection.
 
 ### `list_tables_in_schema`
+
 Lists all tables within a specific schema. Useful to limit the amount of tables, especially when working with just one schema.
 
 ### `get_table_schema`
+
 Retrieves column names and data types for a specific table, table should be in a format like `schema.table`.
 
 ## Project Structure
@@ -205,35 +246,6 @@ make install-mcp
 # OR manually
 mcp install steampipe_mcp_server.cli:main
 ```
-
-#### Published Version
-
-For the published version, you can configure Claude Desktop directly:
-
-1. Open Claude Desktop
-2. Navigate to Settings > Developer > Edit Config
-3. Add the following configuration to the JSON file:
-
-```json
-{
-  "mcpServers": {
-    "steampipe": {
-      "command": "uvx",
-      "args": [
-        "steampipe-mcp-server",
-        "--database-url",
-        "postgresql://steampipe:password@localhost:9193/steampipe"
-      ]
-    }
-  }
-}
-```
-
-4. Save the config file and restart Claude Desktop
-
-Replace the database URL with your actual Steampipe database URL. This configuration uses `uvx` to execute the published package directly.
-
-The tools will be available within Claude under the `steampipe` namespace.
 
 ## Testing
 
