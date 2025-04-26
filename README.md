@@ -124,24 +124,6 @@ Lists all tables within a specific schema. Useful to limit the amount of tables,
 
 Retrieves column names and data types for a specific table, table should be in a format like `schema.table`.
 
-## Project Structure
-
-```
-steampipe-mcp-server/
-├── src/
-│   └── steampipe_mcp_server/  # Main package
-│       ├── __init__.py
-│       ├── cli.py             # Command-line interface
-│       ├── database.py        # Database service
-│       ├── server.py          # MCP server setup
-│       ├── tools.py           # MCP tools implementation
-│       └── test_utils.py      # Testing utilities
-├── tests/                     # Test directory
-├── Makefile                   # Build automation
-├── pyproject.toml             # Project configuration
-└── README.md                  # This file
-```
-
 ## Installation
 
 ### Development Setup (Recommended)
@@ -165,12 +147,6 @@ Alternatively, you can:
 2. Create a virtual environment: `uv venv`
 3. Activate the environment: `source .venv/bin/activate` (Linux/macOS) or `.venv\Scripts\activate` (Windows)
 4. Install dev dependencies: `uv pip install -e .[dev]`
-
-### Install from Source
-
-```bash
-pip install -e .
-```
 
 ## Development
 
@@ -231,20 +207,6 @@ steampipe-mcp-server --database-url postgresql://steampipe:password@localhost:91
 # OR with environment variable
 export STEAMPIPE_MCP_DATABASE_URL=postgresql://steampipe:password@localhost:9193/steampipe
 steampipe-mcp-server
-```
-
-### 3. Install in Claude Desktop
-
-#### Development Version
-
-For development and testing:
-
-```bash
-# Using make (ensure STEAMPIPE_MCP_DATABASE_URL environment variable is set)
-make install-mcp
-
-# OR manually
-mcp install steampipe_mcp_server.cli:main
 ```
 
 ## Testing
