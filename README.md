@@ -1,3 +1,5 @@
+[![MseeP.ai Security Assessment Badge](https://mseep.net/pr/zen4ever-steampipe-mcp-server-badge.png)](https://mseep.ai/app/zen4ever-steampipe-mcp-server)
+
 # Steampipe MCP Server
 
 An MCP server interacting with PostgreSQL databases, primarily for use with [Steampipe](https://steampipe.io/).
